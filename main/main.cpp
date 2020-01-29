@@ -20,6 +20,10 @@
 
 #define APP_VERSION "0.1"
 
+#define BTN_PIN_PLUS ((gpio_num_t)39)
+#define BTN_PIN_OK ((gpio_num_t)37)
+#define BTN_PIN_MINUS ((gpio_num_t)38)
+
 static const char *TAG = "main";
 
 static struct tm* tm_info;
@@ -104,6 +108,18 @@ void fs_init()
 
 extern "C" void app_main()
 {
+    gpio_config_t buttons_config;
+    buttons_config.intr_type = (gpio_int_type_t)GPIO_PIN_INTR_DISABLE;
+    buttons_config.mode = GPIO_MODE_INPUT;
+    buttons_config.pull_up_en = (gpio_pullup_t)1;
+    buttons_config.pull_down_en = (gpio_pulldown_t)0;
+    buttons_config.pin_bit_mask = (1LL << BTN_PIN_MINUS);
+    gpio_config(&buttons_config);
+    buttons_config.pin_bit_mask = (1LL << BTN_PIN_OK);
+    gpio_config(&buttons_config);
+    buttons_config.pin_bit_mask = (1LL << BTN_PIN_PLUS);
+    gpio_config(&buttons_config);
+
     display_init();
     spi_init();
 
@@ -125,13 +141,14 @@ extern "C" void app_main()
 	uint32_t tstart;
 	int pass = 0;
     int font = DEFAULT_FONT;
+    EPD_setFont(font, NULL);
+
+    EPD_wait(1000);
 
     while (1) {
 		EPD_fillScreen(_bg);
 		_fg = 15;
 		_bg = 0;
-
-        EPD_setFont(font++ % USER_FONT, NULL);
 
         char text[128];
         
@@ -153,7 +170,25 @@ extern "C" void app_main()
         EPD_print(text, 10, 10);
         EPD_UpdateScreen();
 
-        EPD_wait(5000);
+        while (1) {
+            EPD_wait(100);
+            if (gpio_get_level(BTN_PIN_OK) == 0) {
+                ESP_LOGI(TAG, "Clear page.");
+                EPD_DisplayClearPart();
+                EPD_fillScreen(_bg);
+                EPD_print(text, 10, 10);
+                EPD_UpdateScreen();
+            }
+            if (gpio_get_level(BTN_PIN_PLUS) == 0) {
+                ESP_LOGI(TAG, "Turn page PLUS.");
+                break;
+            }
+            if (gpio_get_level(BTN_PIN_MINUS) == 0) {
+                ESP_LOGI(TAG, "Turn page MINUS.");
+                fseek(f, 2 * sizeof(text), SEEK_CUR);
+                break;
+            }
+        }
     }
 
 }
