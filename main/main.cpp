@@ -16,8 +16,11 @@
 #include "spi_master_lobo.h"
 #include "img_hacking.c"
 #include "EPD.h"
+#include "storage.h"
 
 #define APP_VERSION "0.1"
+
+static const char *TAG = "main";
 
 static struct tm* tm_info;
 static char tmp_buff[128];
@@ -88,9 +91,14 @@ void fs_init()
     vfs_spiffs_register();
     if (spiffs_is_mounted) {
         ESP_LOGI(tag, "File system mounted.");
-    }
-    else {
+    } else {
         ESP_LOGE(tag, "Error mounting file system.");
+    }
+
+    if (storage_init() == 0) {
+        ESP_LOGI(tag, "SD card mounted.");
+    } else {
+        ESP_LOGE(tag, "Error mounting SD card.");
     }
 }
 
@@ -103,33 +111,49 @@ extern "C" void app_main()
 
     printf("\n   LilyBook v%s\n\n", APP_VERSION);
 
+    fs_init();
+
 	display_connect();
 
 	EPD_DisplayClearFull();
-
-    fs_init();
     
 	printf("==== START ====\r\n\n");
+
+    FILE* f = fopen("/sdcard/book.txt", "r");
 
 	_gs = 1;
 	uint32_t tstart;
 	int pass = 0;
-    int f = DEFAULT_FONT;
-    while (1) {
-    	EPD_DisplayClearPart();
+    int font = DEFAULT_FONT;
 
+    while (1) {
 		EPD_fillScreen(_bg);
 		_fg = 15;
 		_bg = 0;
 
-        EPD_setFont(f++ % USER_FONT, NULL);
-        EPD_print("Welcome to LilyBook", 10, 10);
+        EPD_setFont(font++ % USER_FONT, NULL);
+
+        char text[128];
+        
+        if (f == NULL) {
+            ESP_LOGE(TAG, "Failed to open file for reading");
+            sprintf(text, "Could not open SD card.");
+            f = fopen("/sdcard/book.txt", "r");
+        } else {
+            if (fgets(text, sizeof(text), f) == NULL) {
+                ESP_LOGI(TAG, "End of file, closing.");
+                fclose(f);
+                f = NULL;
+            } else {
+                ESP_LOGI(TAG, "Read content: %s", text);
+            }
+        }
+
+        text_wrap = 1;
+        EPD_print(text, 10, 10);
         EPD_UpdateScreen();
 
         EPD_wait(5000);
-
-    	EPD_PowerOff();
-		EPD_wait(8000);
     }
 
 }
