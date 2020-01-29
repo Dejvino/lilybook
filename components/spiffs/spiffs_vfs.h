@@ -13,11 +13,18 @@
 
 #define SPIFFS_BASE_PATH "/spiffs"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-int spiffs_is_registered;
-int spiffs_is_mounted;
+extern int spiffs_is_registered;
+extern int spiffs_is_mounted;
 
 void vfs_spiffs_register();
 int spiffs_mount();
 int spiffs_unmount(int unreg);
 void spiffs_fs_stat(uint32_t *total, uint32_t *used);
+
+#ifdef __cplusplus
+}
+#endif

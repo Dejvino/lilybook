@@ -29,6 +29,25 @@
 	#define yDot 296
 	#define DELAYTIME 1500
 
+// ===== Global ======
+spi_lobo_device_handle_t disp_spi;
+uint8_t *gs_disp_buffer;
+uint8_t *disp_buffer;
+uint8_t *gs_drawBuff;
+uint8_t *drawBuff;
+int _width;
+int _height;
+uint16_t gs_used_shades;
+uint8_t _gs;
+uint8_t *LUT_part;
+uint8_t LUTDefault_fastest[31];
+uint8_t LUTDefault_part[31];
+uint8_t LUT_gs[31];
+uint8_t LUTDefault_full[31];
+uint8_t lvl_buf[16];
+uint8_t lvl_buf_jpg[16];
+// =====
+
 static uint8_t GDOControl[] = {0x01, (yDot-1)%256, (yDot-1)/256, 0x00};
 static uint8_t softstart[4] = {0x0c, 0xd7, 0xd6, 0x9d};
 static uint8_t VCOMVol[2] = {0x2c, 0xa8};			// VCOM 7c
@@ -255,7 +274,7 @@ void EPD_PowerOff()
 	WaitBusy();
 	ReadBusy();
 #endif
-#if POWER_Pin
+#ifdef POWER_Pin
 	gpio_set_level(DC_Pin, 0);
 	gpio_set_level(MOSI_Pin, 0);
 	gpio_set_level(SCK_Pin, 0);
@@ -396,7 +415,7 @@ static void part_display(uint8_t RAM_XST, uint8_t RAM_XEND ,uint16_t RAM_YST, ui
 //--------------------
 static void EPD_Init()
 {
-#if POWER_Pin
+#ifdef POWER_Pin
 	gpio_set_level(POWER_Pin, 1);
 	vTaskDelay(100 / portTICK_RATE_MS);
 #else

@@ -35,6 +35,28 @@
 #define min(A,B) ( (A) < (B) ? (A):(B))
 #endif
 
+//==========================================================================================
+// ==== Global variables ===================================================================
+//==========================================================================================
+uint8_t   orientation;		// current screen orientation
+uint16_t  font_rotate;   	// current font font_rotate angle (0~395)
+uint8_t   font_transparent;	// if not 0 draw fonts transparent
+uint8_t   font_forceFixed;  // if not zero force drawing proportional fonts with fixed width
+uint8_t   font_buffered_char;
+uint8_t   font_line_space;	// additional spacing between text lines; added to font height
+uint8_t   text_wrap;        // if not 0 wrap long text to the new line, else clip
+color_t   _fg;            	// current foreground color for fonts
+color_t   _bg;            	// current background for non transparent fonts
+dispWin_t dispWin;			// display clip window
+float	  _angleOffset;		// angle offset for arc, polygon and line by angle functions
+
+Font_t cfont;					// Current font structure
+uint8_t image_debug;
+
+int	EPD_X;					// X position of the next character after EPD_print() function
+int	EPD_Y;					// Y position of the next character after EPD_print() function
+// =========================================================================================
+
 // Embedded fonts
 extern uint8_t tft_SmallFont[];
 extern uint8_t tft_DefaultFont[];

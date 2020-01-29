@@ -15,19 +15,23 @@
 #include <stdint.h>
 #include "spi_master_lobo.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define EPD_DISPLAY_WIDTH	296
 #define EPD_DISPLAY_HEIGHT	128
 
-#define SCK_Pin		18
-#define MOSI_Pin	23
+#define SCK_Pin		((gpio_num_t)18)
+#define MOSI_Pin	((gpio_num_t)23)
 //#define MISO_Pin	19
-#define DC_Pin		17//26
-#define BUSY_Pin	4//32
-#define RST_Pin		16//27
-#define CS_Pin		5
+#define DC_Pin		((gpio_num_t)17)//26
+#define BUSY_Pin	((gpio_num_t)4)//32
+#define RST_Pin		((gpio_num_t)16)//27
+#define CS_Pin		((gpio_num_t)5)
 // ePaper display can be powered from GPIO
 // if powered directly from Vcc, set this to 0
-#define POWER_Pin	22
+#define POWER_Pin	((gpio_num_t)22)
 
 #define DC_VAL (1 << DC_Pin)
 
@@ -51,22 +55,22 @@
 #define SPI_BUS VSPI_HOST
 // ==================================================
 
-spi_lobo_device_handle_t disp_spi;
-uint8_t *gs_disp_buffer;
-uint8_t *disp_buffer;
-uint8_t *gs_drawBuff;
-uint8_t *drawBuff;
-int _width;
-int _height;
-uint16_t gs_used_shades;
-uint8_t _gs;
-uint8_t *LUT_part;
-uint8_t LUTDefault_fastest[31];
-uint8_t LUTDefault_part[31];
-uint8_t LUT_gs[31];
-uint8_t LUTDefault_full[31];
-uint8_t lvl_buf[16];
-uint8_t lvl_buf_jpg[16];
+extern spi_lobo_device_handle_t disp_spi;
+extern uint8_t *gs_disp_buffer;
+extern uint8_t *disp_buffer;
+extern uint8_t *gs_drawBuff;
+extern uint8_t *drawBuff;
+extern int _width;
+extern int _height;
+extern uint16_t gs_used_shades;
+extern uint8_t _gs;
+extern uint8_t *LUT_part;
+extern uint8_t LUTDefault_fastest[31];
+extern uint8_t LUTDefault_part[31];
+extern uint8_t LUT_gs[31];
+extern uint8_t LUTDefault_full[31];
+extern uint8_t lvl_buf[16];
+extern uint8_t lvl_buf_jpg[16];
 
 void EPD_wait(uint32_t ms);
 void EPD_DisplaySetFull(uint8_t val);
@@ -82,5 +86,8 @@ void EPD_Cls();
 void EPD_PowerOn();
 void EPD_PowerOff();
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif

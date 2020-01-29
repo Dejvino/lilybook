@@ -1,4 +1,4 @@
-menu "ePaper Display DEMO Configuration"
+menu "LilyBook Configuration"
 
 config SPIFFS_BASE_ADDR
     hex "SPIFFS Base address"
@@ -24,26 +24,5 @@ config SPIFFS_LOG_PAGE_SIZE
     default 256
     help
 	Set it to the phisycal page size og the used SPI Flash chip.
-
-config EXAMPLE_USE_WIFI
-    bool "Use wifi in TFT Demo"
-    default n
-    help
-        If WiFi is used ntp server will be used to provide the exact time
-        and file timestamps will be correct.
-config WIFI_SSID
-    string "WiFi SSID"
-   	depends on EXAMPLE_USE_WIFI
-    default "myssid"
-    help
-	SSID (network name) for the demo to connect to.
-
-config WIFI_PASSWORD
-    string "WiFi Password"
-   	depends on EXAMPLE_USE_WIFI
-    default "mypassword"
-    help
-	WiFi password (WPA or WPA2) for the demo to use.
-
 
 endmenu

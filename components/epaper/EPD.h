@@ -9,6 +9,9 @@
 
 #include <stdlib.h>
 #include "EPDspi.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef uint8_t color_t;
 
@@ -36,23 +39,23 @@ typedef struct {
 //==========================================================================================
 // ==== Global variables ===================================================================
 //==========================================================================================
-uint8_t   orientation;		// current screen orientation
-uint16_t  font_rotate;   	// current font font_rotate angle (0~395)
-uint8_t   font_transparent;	// if not 0 draw fonts transparent
-uint8_t   font_forceFixed;  // if not zero force drawing proportional fonts with fixed width
-uint8_t   font_buffered_char;
-uint8_t   font_line_space;	// additional spacing between text lines; added to font height
-uint8_t   text_wrap;        // if not 0 wrap long text to the new line, else clip
-color_t   _fg;            	// current foreground color for fonts
-color_t   _bg;            	// current background for non transparent fonts
-dispWin_t dispWin;			// display clip window
-float	  _angleOffset;		// angle offset for arc, polygon and line by angle functions
+extern uint8_t   orientation;		// current screen orientation
+extern uint16_t  font_rotate;   	// current font font_rotate angle (0~395)
+extern uint8_t   font_transparent;	// if not 0 draw fonts transparent
+extern uint8_t   font_forceFixed;  // if not zero force drawing proportional fonts with fixed width
+extern uint8_t   font_buffered_char;
+extern uint8_t   font_line_space;	// additional spacing between text lines; added to font height
+extern uint8_t   text_wrap;        // if not 0 wrap long text to the new line, else clip
+extern color_t   _fg;            	// current foreground color for fonts
+extern color_t   _bg;            	// current background for non transparent fonts
+extern dispWin_t dispWin;			// display clip window
+extern float	  _angleOffset;		// angle offset for arc, polygon and line by angle functions
 
-Font_t cfont;					// Current font structure
-uint8_t image_debug;
+extern Font_t cfont;					// Current font structure
+extern uint8_t image_debug;
 
-int	EPD_X;					// X position of the next character after EPD_print() function
-int	EPD_Y;					// Y position of the next character after EPD_print() function
+extern int	EPD_X;					// X position of the next character after EPD_print() function
+extern int	EPD_Y;					// Y position of the next character after EPD_print() function
 // =========================================================================================
 
 
@@ -567,5 +570,7 @@ void getFontCharacters(uint8_t *buf);
  *
  */
 int EPD_jpg_image(int x, int y, uint8_t scale, char *fname, uint8_t *buf, int size);
-
+#ifdef __cplusplus
+}
+#endif
 #endif
