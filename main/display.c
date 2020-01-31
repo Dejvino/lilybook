@@ -12,10 +12,12 @@
 
 void display_init()
 {
+    // drawing buffer
 	disp_buffer = (uint8_t*)pvPortMallocCaps(EPD_DISPLAY_WIDTH * (EPD_DISPLAY_HEIGHT/8), MALLOC_CAP_DMA);
 	assert(disp_buffer);
 	drawBuff = disp_buffer;
 
+    // gray-scale drawing buffer
 	gs_disp_buffer = (uint8_t*)pvPortMallocCaps(EPD_DISPLAY_WIDTH * EPD_DISPLAY_HEIGHT, MALLOC_CAP_DMA);
 	assert(gs_disp_buffer);
 	gs_drawBuff = gs_disp_buffer;
@@ -67,8 +69,6 @@ void display_connect()
 
     printf("SPI: attached display device, speed=%u\r\n", spi_lobo_get_speed(disp_spi));
 	printf("SPI: bus uses native pins: %s\r\n", spi_lobo_uses_native_pins(disp_spi) ? "true" : "false");
-
-    //EPD_PowerOn();
 }
 
 void display_splash_screen()
@@ -99,4 +99,15 @@ void display_refresh()
 void display_update()
 {
     EPD_UpdateScreen();
+}
+
+extern void EPD_wake();
+void display_wake()
+{
+    EPD_wake();
+}
+
+void display_sleep()
+{
+    EPD_PowerOff();
 }

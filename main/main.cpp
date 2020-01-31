@@ -59,22 +59,34 @@ extern "C" void app_main()
     PagePrinter pagePrinter;
     TextStorage textStorage;
     TextReader* textReader = textStorage.open("/sdcard/book.txt");
-    Page page;
+    Page* pageLast = NULL;
+    Page* pageCurrent = NULL;
 
     long bookmark = 0;
+    //bool displaySleeping = false;
 
     while (1) {
 		char text[1024];
         if (textReader != NULL) {
-            size_t read = textReader->read(bookmark, text, sizeof(text));
+            if (pageCurrent == NULL) {
+                size_t read = textReader->read(bookmark, text, sizeof(text));
+                pageCurrent = typesetter.preparePage(text, sizeof(text));
+            }
+            if (pageLast == NULL) {
+                size_t read = textReader->read(bookmark - sizeof(text), text, sizeof(text));
+                pageLast = typesetter.preparePreviousPage(text, sizeof(text));
+            }
         } else {
+            typesetter.destroyPage(pageCurrent);
             strcpy(text, "File could not be opened.");
+            pageCurrent = typesetter.preparePage(text, sizeof(text));
         }
-        typesetter.preparePage(&page, text, sizeof(text));
+
         display_clear();
-        pagePrinter.print(&page);
+        pagePrinter.print(pageCurrent);
         display_update();
 
+        //time_t idleStart = clock();
         while (1) {
             sleep(10);
             if (buttons_pressed_ok()) {
@@ -84,15 +96,39 @@ extern "C" void app_main()
             }
             if (buttons_pressed_plus()) {
                 ESP_LOGI(TAG, "Turn page PLUS.");
-                bookmark += sizeof(text);
+                if (pageCurrent != NULL) {
+                    bookmark += pageCurrent->len;
+                    typesetter.destroyPage(pageLast);
+                    pageLast = pageCurrent;
+                    pageCurrent = NULL;
+                } else {
+                    ESP_LOGW(TAG, "No current page.");
+                }
                 break;
             }
             if (buttons_pressed_minus()) {
                 ESP_LOGI(TAG, "Turn page MINUS.");
-                bookmark -= sizeof(text);
+                if (pageLast != NULL) {
+                    bookmark -= pageLast->len;
+                    typesetter.destroyPage(pageCurrent);
+                    pageCurrent = pageLast;
+                    pageLast = NULL;
+                } else {
+                    ESP_LOGW(TAG, "No last page.");
+                }
                 break;
             }
+            /*if (!displaySleeping && (clock() - idleStart > DISPLAY_SLEEP_TIMEOUT)) {
+                displaySleeping = true;
+                ESP_LOGI(TAG, "Display going to sleep after %d ms.", DISPLAY_SLEEP_TIMEOUT);
+                display_sleep();
+            }*/
         }
+        /*if (displaySleeping) {
+            displaySleeping = false;
+            ESP_LOGI(TAG, "Display waking up.");
+            display_wake();
+        }*/
     }
 
 }

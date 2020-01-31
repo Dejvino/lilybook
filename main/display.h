@@ -6,3 +6,6 @@ void display_splash_screen();
 void display_clear();
 void display_refresh();
 void display_update();
+
+void display_wake();
+void display_sleep();

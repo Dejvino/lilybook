@@ -22,6 +22,6 @@ void PagePrinter::print(Page* page)
     EPD_setFont(font, NULL);
     text_wrap = 1;
     EPD_print(page->text, 0, 0);
-    EPD_UpdateScreen();
+    //EPD_UpdateScreen();
 
 }

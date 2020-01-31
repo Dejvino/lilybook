@@ -6,8 +6,7 @@ class Typesetter
 public:
     Typesetter();
 
-    void preparePage(Page* page, char* text, size_t len);
-
-//private:
-
+    Page* preparePage(char* text, size_t len);
+    Page* preparePreviousPage(char* text, size_t len);
+    void destroyPage(Page* page);
 };

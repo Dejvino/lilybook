@@ -23,6 +23,10 @@
 
 #define EPD_DEBUG 1
 
+#define EPD_BORDER_WHITE 0x61
+#define EPD_BORDER_BLACK 0x51
+#define EPD_BORDER EPD_BORDER_BLACK
+
 #define EPD2X9 1
 
 	#define xDot 128
@@ -54,7 +58,7 @@ static uint8_t VCOMVol[2] = {0x2c, 0xa8};			// VCOM 7c
 static uint8_t DummyLine[2] = {0x3a, 0x1a};			// 4 dummy line per gate
 static uint8_t Gatetime[2] = {0x3b, 0x08};			// 2us per line
 static uint8_t RamDataEntryMode[2] = {0x11, 0x01};	// Ram data entry mode
-static uint8_t Border[2] = {0x3c, 0x61};			// Border control ( 0x61: white border; 0x51: black border
+static uint8_t Border[2] = {0x3c, EPD_BORDER};			// Border control ( 0x61: white border; 0x51: black border
 
 /*
 There are totally 20 phases for programmable Source waveform of different phase length.
@@ -528,6 +532,13 @@ static void EPD_init_Part(void)
 	EPD_Write((uint8_t *)LUT_part, 31);
 	EPD_PowerOn();
 }
+
+void EPD_wake()
+{
+	EPD_Init();
+	EPD_PowerOn();
+}
+
 /********************************************************************************
 parameter:
 	Label  :

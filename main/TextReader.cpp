@@ -1,3 +1,4 @@
+#include <string.h>
 #include "TextReader.h"
 
 #include "esp_log.h"
@@ -15,6 +16,14 @@ void TextReader::close()
 
 size_t TextReader::read(long pos, char* text, size_t len)
 {
+    memset(text, 0, len);
+    if (pos < 0) {
+        len += pos;
+        pos = 0;
+    }
+    if (len <= 0) {
+        return 0;
+    }
     if (this->f == NULL) {
         ESP_LOGE(TAG, "File not opened.");
         sprintf(text, "File could not be opened.");
