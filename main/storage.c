@@ -9,9 +9,10 @@
 #include "driver/sdmmc_host.h"
 #include "driver/sdspi_host.h"
 #include "sdmmc_cmd.h"
+#include "spiffs_vfs.h"
 #include "storage.h"
 
-static const char *TAG = "storage";
+static const char *tag = "storage";
 
 // This example can use SDMMC and SPI peripherals to communicate with SD card.
 // By default, SDMMC peripheral is used.
@@ -33,10 +34,10 @@ static const char *TAG = "storage";
 #define PIN_NUM_CS   ((gpio_num_t)13)
 #endif //USE_SPI_MODE
 
-int storage_init()
+int sdcard_init()
 {
 #ifndef USE_SPI_MODE
-    ESP_LOGI(TAG, "Using SDMMC peripheral");
+    ESP_LOGI(tag, "Using SDMMC peripheral");
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
 
     // This initializes the slot without card detect (CD) and write protect (WP) signals.
@@ -86,10 +87,10 @@ int storage_init()
 
     if (ret != ESP_OK) {
         if (ret == ESP_FAIL) {
-            ESP_LOGE(TAG, "Failed to mount filesystem. "
+            ESP_LOGE(tag, "Failed to mount filesystem. "
                 "If you want the card to be formatted, set format_if_mount_failed = true.");
         } else {
-            ESP_LOGE(TAG, "Failed to initialize the card (%s). "
+            ESP_LOGE(tag, "Failed to initialize the card (%s). "
                 "Make sure SD card lines have pull-up resistors in place.", esp_err_to_name(ret));
         }
         return -1;
@@ -99,4 +100,26 @@ int storage_init()
     sdmmc_card_print_info(stdout, card);
 
     return 0;
+}
+
+int storage_init()
+{
+    int ret = 0;
+
+    vfs_spiffs_register();
+    if (spiffs_is_mounted) {
+        ESP_LOGI(tag, "File system mounted.");
+    } else {
+        ESP_LOGE(tag, "Error mounting file system.");
+        ret += 1 << 1;
+    }
+
+    if (sdcard_init() == 0) {
+        ESP_LOGI(tag, "SD card mounted.");
+    } else {
+        ESP_LOGE(tag, "Error mounting SD card.");
+        ret += 1 << 2;
+    }
+    
+    return ret;
 }
