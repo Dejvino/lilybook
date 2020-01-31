@@ -88,6 +88,8 @@ void display_connect()
 
     printf("SPI: attached display device, speed=%u\r\n", spi_lobo_get_speed(disp_spi));
 	printf("SPI: bus uses native pins: %s\r\n", spi_lobo_uses_native_pins(disp_spi) ? "true" : "false");
+
+    //EPD_PowerOn();
 }
 
 void fs_init()
@@ -127,47 +129,58 @@ extern "C" void app_main()
 
     printf("\n   LilyBook v%s\n\n", APP_VERSION);
 
-    fs_init();
-
 	display_connect();
 
-	EPD_DisplayClearFull();
-    
-	printf("==== START ====\r\n\n");
+    EPD_DisplayClearPart();
+    EPD_fillScreen(0);
+    EPD_UpdateScreen();
 
-    FILE* f = fopen("/sdcard/book.txt", "r");
+    EPD_setFont(COMIC24_FONT, NULL);
+    EPD_print("LilyBook", 30, 30);
+    EPD_setFont(DEFAULT_FONT, NULL);
+    EPD_print("Version:", 30, 70);
+    EPD_print(APP_VERSION, 100, 70);
+    EPD_UpdateScreen();
+
+    EPD_wait(500);
+
+    fs_init();
+
+	printf("==== START ====\r\n\n");
 
 	_gs = 1;
 	uint32_t tstart;
 	int pass = 0;
-    int font = DEFAULT_FONT;
+    int font = DEJAVU18_FONT;//DEFAULT_FONT;
     EPD_setFont(font, NULL);
 
-    EPD_wait(1000);
+    EPD_wait(100);
+
+    FILE* f = fopen("/sdcard/book.txt", "r");
 
     while (1) {
 		EPD_fillScreen(_bg);
 		_fg = 15;
 		_bg = 0;
 
-        char text[128];
+        char text[1024];
         
         if (f == NULL) {
             ESP_LOGE(TAG, "Failed to open file for reading");
             sprintf(text, "Could not open SD card.");
             f = fopen("/sdcard/book.txt", "r");
         } else {
-            if (fgets(text, sizeof(text), f) == NULL) {
-                ESP_LOGI(TAG, "End of file, closing.");
+            if (fread(text, 1, sizeof(text), f) > 0) {
+                ESP_LOGI(TAG, "Read content: %s", text);
+            } else {
+                ESP_LOGI(TAG, "End of file. Closing.");
                 fclose(f);
                 f = NULL;
-            } else {
-                ESP_LOGI(TAG, "Read content: %s", text);
             }
         }
 
         text_wrap = 1;
-        EPD_print(text, 10, 10);
+        EPD_print(text, 0, 0);
         EPD_UpdateScreen();
 
         while (1) {
