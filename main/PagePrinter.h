@@ -6,6 +6,4 @@ public:
     PagePrinter();
 
     void print(Page* page);
-
-private:
 };

@@ -5,7 +5,8 @@
 #include "esp_log.h"
 static const char *TAG = "PagePrinter";
 
-int font = DEJAVU18_FONT;//DEFAULT_FONT;
+//int pageFont = DEFAULT_FONT;
+int pageFont = DEJAVU18_FONT;
 
 PagePrinter::PagePrinter()
 {}
@@ -19,7 +20,7 @@ void PagePrinter::print(Page* page)
     if (page->len == 0) {
         return;
     }
-    EPD_setFont(font, NULL);
+    EPD_setFont(pageFont, NULL);
     text_wrap = 1;
     EPD_print(page->text, 0, 0);
     //EPD_UpdateScreen();

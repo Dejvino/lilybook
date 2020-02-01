@@ -7,6 +7,7 @@ class Page
 public:
     Page();
 
+    size_t start;
     char* text;
     size_t len;
 

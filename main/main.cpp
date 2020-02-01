@@ -70,11 +70,20 @@ extern "C" void app_main()
         if (textReader != NULL) {
             if (pageCurrent == NULL) {
                 size_t read = textReader->read(bookmark, text, sizeof(text));
-                pageCurrent = typesetter.preparePage(text, sizeof(text));
+                pageCurrent = typesetter.preparePage(text, read);
+                pageCurrent->start = bookmark;
             }
             if (pageLast == NULL) {
-                size_t read = textReader->read(bookmark - sizeof(text), text, sizeof(text));
-                pageLast = typesetter.preparePreviousPage(text, sizeof(text));
+                // align with the start?
+                if (bookmark < sizeof(text)) {
+                    size_t read = textReader->read(0, text, sizeof(text));
+                    pageLast = typesetter.preparePage(text, read);
+                    pageLast->start = 0;
+                } else {
+                    size_t read = textReader->read((bookmark - sizeof(text)), text, sizeof(text));
+                    pageLast = typesetter.preparePreviousPage(text, read);
+                    pageLast->start = bookmark - pageLast->len;
+                }
             }
         } else {
             typesetter.destroyPage(pageCurrent);
@@ -97,7 +106,8 @@ extern "C" void app_main()
             if (buttons_pressed_plus()) {
                 ESP_LOGI(TAG, "Turn page PLUS.");
                 if (pageCurrent != NULL) {
-                    bookmark += pageCurrent->len;
+                    bookmark = pageCurrent->start + pageCurrent->len;
+                    // TODO: limit bookmark to file size
                     typesetter.destroyPage(pageLast);
                     pageLast = pageCurrent;
                     pageCurrent = NULL;
@@ -109,7 +119,7 @@ extern "C" void app_main()
             if (buttons_pressed_minus()) {
                 ESP_LOGI(TAG, "Turn page MINUS.");
                 if (pageLast != NULL) {
-                    bookmark -= pageLast->len;
+                    bookmark = pageLast->start;
                     typesetter.destroyPage(pageCurrent);
                     pageCurrent = pageLast;
                     pageLast = NULL;

@@ -44,6 +44,7 @@ uint8_t   font_transparent;	// if not 0 draw fonts transparent
 uint8_t   font_forceFixed;  // if not zero force drawing proportional fonts with fixed width
 uint8_t   font_buffered_char;
 uint8_t   font_line_space;	// additional spacing between text lines; added to font height
+uint8_t	  font_x_space;		// additional spacing between characters in x axis
 uint8_t   text_wrap;        // if not 0 wrap long text to the new line, else clip
 color_t   _fg;            	// current foreground color for fonts
 color_t   _bg;            	// current background for non transparent fonts
@@ -1732,10 +1733,10 @@ int EPD_getStringWidth(char* str)
 		char* tempStrptr = str;
 		while (*tempStrptr != 0) {
 			if (getCharPtr(*tempStrptr++)) {
-				strWidth += (((fontChar.width > fontChar.xDelta) ? fontChar.width : fontChar.xDelta) + 1);
+				strWidth += (((fontChar.width > fontChar.xDelta) ? fontChar.width : fontChar.xDelta) + font_x_space);
 			}
 		}
-		strWidth--;
+		strWidth -= font_x_space;
 	}
 	return strWidth;
 }
@@ -1980,7 +1981,7 @@ void EPD_print(char *st, int x, int y) {
 			// Let's print the character
 			if (cfont.x_size == 0) {
 				// == proportional font
-				if (font_rotate == 0) EPD_X += printProportionalChar( EPD_X, EPD_Y) + 1;
+				if (font_rotate == 0) EPD_X += printProportionalChar( EPD_X, EPD_Y) + font_x_space;
 				else {
 					// rotated proportional font
 					offset += rotatePropChar(x, y, offset);
