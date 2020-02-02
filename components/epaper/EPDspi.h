@@ -13,7 +13,7 @@
 #define _EPDSPI_H_
 
 #include <stdint.h>
-#include "spi_master_lobo.h"
+#include "spidriver/spi_master_lobo.h"
 
 #ifdef __cplusplus
 extern "C" {

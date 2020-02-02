@@ -1,25 +1,23 @@
 #include "core/common.h"
 #include "core/buttons.h"
 #include "core/display.h"
-#include <EPD.h>
+#include <epaper/EPD.h>
 #include "ModeRunner.h"
 #include "ReaderMode.h"
 #include "AbstractMenuMode.h"
 
 static int baseY = 35;
-static int menuSkip = 20;
-static int x = 40;
-static int menu_options_size = 4;
+static int x = 20;
 
-void draw_menu_option(char* text, int line, bool selected)
+void draw_menu_option(char* text, int textX, int textHeight, int line, bool selected)
 {
-    EPD_print(text, CENTER, baseY + line * menuSkip); 
+    EPD_print(text, textX, baseY + line * textHeight); 
 }
 
-void draw_menu_cursor(int cursor)
+void draw_menu_cursor(int cursor, int textHeight)
 {
-    EPD_drawRect(x, baseY + cursor * menuSkip,
-        EPD_DISPLAY_WIDTH - 2*x, menuSkip + 1, 0x0F);
+    EPD_drawRect(x, baseY + cursor * textHeight,
+        EPD_DISPLAY_WIDTH - 2*x, textHeight + 1, 0x0F);
 }
 
 void AbstractMenuMode::start()
@@ -32,13 +30,18 @@ void AbstractMenuMode::loop()
     EPD_print(this->getTitle(), CENTER, 0);
 
     int line = 0;
-    EPD_setFont(DEJAVU18_FONT, NULL);
+    EPD_setFont(this->getOptionsFont(), NULL);
+    int menu_option_height = EPD_getfontheight() + 1;
+    int menu_options_limit = (EPD_DISPLAY_HEIGHT - baseY) / (EPD_getfontheight() + 1);
     char** options = this->getOptions();
     int menu_options_size = this->getOptionsSize();
-    for (int line = 0; line < menu_options_size; line++) {
-        draw_menu_option(options[line], line, this->cursor == line);
+    int start = (this->cursor / menu_options_limit) * menu_options_limit;
+    int stop = ((this->cursor / menu_options_limit) + 1) * menu_options_limit;
+    for (int line = start; line < menu_options_size && line < stop; line++) {
+        draw_menu_option(options[line], this->getOptionsX(), menu_option_height,
+        line % menu_options_limit, this->cursor == line);
     }
-    draw_menu_cursor(this->cursor);
+    draw_menu_cursor(this->cursor % menu_options_limit, menu_option_height);
     display_update();
 
     while(1) {
@@ -60,3 +63,13 @@ void AbstractMenuMode::loop()
 
 void AbstractMenuMode::finish()
 {}
+
+int AbstractMenuMode::getOptionsX()
+{
+    return CENTER;
+}
+
+int AbstractMenuMode::getOptionsFont()
+{
+    return DEJAVU18_FONT;
+}

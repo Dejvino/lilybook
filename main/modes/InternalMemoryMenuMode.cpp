@@ -1,7 +1,7 @@
 #include "core/common.h"
 #include "core/buttons.h"
 #include "core/display.h"
-#include <EPD.h>
+#include <epaper/EPD.h>
 #include "InternalMemoryMenuMode.h"
 
 void InternalMemoryMenuMode::start()

@@ -9,7 +9,7 @@
 #include "driver/sdmmc_host.h"
 #include "driver/sdspi_host.h"
 #include "sdmmc_cmd.h"
-#include "spiffs_vfs.h"
+#include "spiffs/spiffs_vfs.h"
 #include "storage.h"
 
 static const char *tag = "storage";

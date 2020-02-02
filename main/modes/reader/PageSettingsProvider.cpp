@@ -1,6 +1,6 @@
 #include "PageSettingsProvider.h"
-#include "EPD.h"
-#include "EPDspi.h" // TODO: remove after display config is extracted
+#include "epaper/EPD.h"
+#include "epaper/EPDspi.h" // TODO: remove after display config is extracted
 
 int PageSettingsProvider::getWidth()
 {

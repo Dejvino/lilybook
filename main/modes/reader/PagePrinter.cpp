@@ -1,5 +1,5 @@
 #include "core/display.h"
-#include "EPD.h"
+#include "epaper/EPD.h"
 #include "PagePrinter.h"
 
 #include "esp_log.h"

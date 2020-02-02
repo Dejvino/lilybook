@@ -1,7 +1,7 @@
 #include "core/common.h"
 #include "core/buttons.h"
 #include "core/display.h"
-#include <EPD.h>
+#include <epaper/EPD.h>
 #include "SettingsMenuMode.h"
 
 static char* options[] = {
@@ -38,7 +38,7 @@ void SettingsMenuMode::onOptionSelected(int option)
 {
     switch (option) {
         case 0:
-            // TODO
+            this->setFinished();
             return;
         case 1:
             // TODO
@@ -47,7 +47,7 @@ void SettingsMenuMode::onOptionSelected(int option)
             // TODO
             break;
         case 3:
-            this->setFinished();
+            // TODO
             break;
     }
 }

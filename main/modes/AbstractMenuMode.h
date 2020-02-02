@@ -14,6 +14,8 @@ protected:
     virtual char** getOptions();
     virtual int getOptionsSize();
     virtual void onOptionSelected(int option);
+    virtual int getOptionsX();
+    virtual int getOptionsFont();
 
 private:
     int cursor = 0;

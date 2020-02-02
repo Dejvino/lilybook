@@ -9,7 +9,7 @@
 */
 
 
-#include "spi_master_lobo.h"
+#include "spidriver/spi_master_lobo.h"
 #include <errno.h>
 #include <stdio.h>
 #include <time.h>

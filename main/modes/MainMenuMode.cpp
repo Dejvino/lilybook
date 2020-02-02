@@ -1,7 +1,7 @@
 #include "core/common.h"
 #include "core/buttons.h"
 #include "core/display.h"
-#include <EPD.h>
+#include <epaper/EPD.h>
 #include "ModeRunner.h"
 #include "ReaderMode.h"
 #include "InternalMemoryMenuMode.h"
@@ -12,7 +12,7 @@
 static char* options[] = {
         "Continue Reading",
         "Internal Memory",
-        "SC Card",
+        "SD Card",
         "Settings"
     };
 

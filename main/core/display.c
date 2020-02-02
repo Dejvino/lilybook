@@ -1,6 +1,6 @@
 
-#include "spi_master_lobo.h"
-#include "EPD.h"
+#include "spidriver/spi_master_lobo.h"
+#include "epaper/EPD.h"
 #include <stdlib.h>
 #include "esp_system.h"
 #include "driver/gpio.h"

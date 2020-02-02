@@ -2,7 +2,7 @@ menu "LilyBook Configuration"
 
 config SPIFFS_BASE_ADDR
     hex "SPIFFS Base address"
-    range 0x100000 0x1FFE000
+#    range 0x100000 0x1FFE000
     default 0x180000
     help
 	Starting address of the SPIFFS area in ESP32 Flash

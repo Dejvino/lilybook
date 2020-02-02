@@ -1,17 +1,31 @@
 #include "AppMode.h"
 #include "AbstractMenuMode.h"
 
+#define DIR_ENTRY_NAME_SIZE 16
+typedef struct {
+    char name[DIR_ENTRY_NAME_SIZE];
+    unsigned long bytes;
+    void* next;
+} dir_entry_t;
+
 class SdCardMenuMode : public AbstractMenuMode
 {
 public:
-    virtual void start();
-    virtual void finish();
+    void start();
+    void finish();
 
 protected:
-    virtual char* getTitle();
-    virtual char** getOptions();
-    virtual int getOptionsSize();
-    virtual void onOptionSelected(int option);
+    char* getTitle();
+    char** getOptions();
+    int getOptionsSize();
+    void onOptionSelected(int option);
+    int getOptionsX();
+    int getOptionsFont();
 
 private:
+    char* basedir = "/sdcard/";
+    char** options;
+    char* optionsNames;
+    unsigned long* optionsBytes;
+    int optionsSize;
 };
