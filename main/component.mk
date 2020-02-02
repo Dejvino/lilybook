@@ -3,5 +3,5 @@
 #
 # (Uses default behaviour of compiling all source files in directory, adding 'include' to include path.)
 
-COMPONENT_SRCDIRS := . core modes
+COMPONENT_SRCDIRS := . core modes modes/reader
 COMPONENT_ADD_INCLUDEDIRS := .

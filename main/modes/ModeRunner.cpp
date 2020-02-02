@@ -14,7 +14,12 @@ void ModeRunner::loop()
         ESP_LOGE(TAG, "Cannot run app mode. None activated (depth %d).", this->modeStackDepth);
         return;
     }
-    this->modeStack[this->modeStackDepth]->loop();
+    AppMode* appMode = this->modeStack[this->modeStackDepth];
+    if (appMode->isFinished()) {
+        this->finishMode(appMode);
+    } else {
+        appMode->loop();
+    }
 }
 
 void ModeRunner::startMainMode(AppMode* mode)

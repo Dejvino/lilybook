@@ -1,4 +1,4 @@
-#include "display.h"
+#include "core/display.h"
 #include "EPD.h"
 #include "PagePrinter.h"
 

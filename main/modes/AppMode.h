@@ -7,6 +7,17 @@ public:
     virtual void start();
     virtual void loop();
     virtual void finish();
+    bool isFinished() {
+        return this->finished;
+    }
+
+protected:
+    void setFinished() {
+        this->finished = true;
+    }
+
+private:
+    bool finished = false;
 };
 
 #endif

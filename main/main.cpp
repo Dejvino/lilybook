@@ -20,6 +20,7 @@ static const char *TAG = "main";
 
 #include "modes/ModeRunner.h"
 #include "modes/BootMode.h"
+#include "modes/MainMenuMode.h"
 
 
 static struct tm* tm_info;
@@ -46,6 +47,7 @@ extern "C" void app_main()
 
     getModeRunner()->init();
     getModeRunner()->startMainMode(new BootMode());
+
     while (1) {
         getModeRunner()->loop();
     }

@@ -2,27 +2,16 @@
 #include "string.h"
 #include "core/buttons.h"
 #include "core/display.h"
-#include "reader/Typesetter.h"
-#include "reader/TextStorage.h"
-#include "reader/PagePrinter.h"
 #include "ReaderMode.h"
 
 #include "esp_log.h"
 static const char *TAG = "ReaderMode";
 
-// TODO: class members
-Typesetter typesetter;
-PagePrinter pagePrinter;
-TextStorage textStorage;
-TextReader* textReader = textStorage.open("/sdcard/book.txt");
-Page* pageLast = NULL;
-Page* pageCurrent = NULL;
-
-long bookmark = 0;
 //bool displaySleeping = false;
 
 void ReaderMode::start()
 {
+    this->textReader = textStorage.open("/sdcard/book.txt");
 }
 
 void ReaderMode::loop()
@@ -60,8 +49,8 @@ void ReaderMode::loop()
     while (1) {
         delay(10);
         if (buttons_pressed_ok()) {
-            ESP_LOGI(TAG, "Clear page.");
-            display_refresh();
+            ESP_LOGI(TAG, "Exiting reader.");
+            this->setFinished();
             break;
         }
         if (buttons_pressed_plus()) {
@@ -103,4 +92,6 @@ void ReaderMode::loop()
 }
 
 void ReaderMode::finish()
-{}
+{
+    textStorage.close(this->textReader);
+}

@@ -10,7 +10,7 @@ void BootMode::start()
 void BootMode::loop()
 {
     display_splash_screen();
-    delay(500);
+    delay(200);
 
     getModeRunner()->startMainMode(new MainMenuMode());
 }
