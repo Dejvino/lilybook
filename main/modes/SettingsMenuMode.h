@@ -1,7 +1,7 @@
 #include "AppMode.h"
 #include "AbstractMenuMode.h"
 
-class MainMenuMode : public AbstractMenuMode
+class SettingsMenuMode : public AbstractMenuMode
 {
 public:
     virtual void start();

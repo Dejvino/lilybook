@@ -1,10 +1,12 @@
+#ifndef _ABSTRACTMENUMODE_H_
+#define _ABSTRACTMENUMODE_H_
 #include "AppMode.h"
-#include "AbstractMenuMode.h"
 
-class MainMenuMode : public AbstractMenuMode
+class AbstractMenuMode : public AppMode
 {
 public:
     virtual void start();
+    virtual void loop();
     virtual void finish();
 
 protected:
@@ -14,4 +16,7 @@ protected:
     virtual void onOptionSelected(int option);
 
 private:
+    int cursor = 0;
 };
+
+#endif
