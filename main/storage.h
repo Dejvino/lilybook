@@ -1,2 +1,0 @@
-
-int storage_init();
