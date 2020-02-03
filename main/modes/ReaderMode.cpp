@@ -2,6 +2,7 @@
 #include "string.h"
 #include "core/buttons.h"
 #include "core/display.h"
+#include "reader/reader_storage.h"
 #include "ReaderMode.h"
 
 #include "esp_log.h"
@@ -11,7 +12,20 @@ static const char *TAG = "ReaderMode";
 
 void ReaderMode::start()
 {
-    this->textReader = textStorage.open("/sdcard/book.txt");
+    char filename[64];
+    reader_storage_get_filename(filename, sizeof(filename));
+    this->textReader = textStorage.open(filename);
+    
+    this->bookmark_max = reader_storage_get_length();
+    this->bookmark = reader_storage_get_position();
+    if (this->bookmark_max < 0) {
+        this->bookmark_max = 0;
+    }
+    if (this->bookmark < 0 || this->bookmark > this->bookmark_max) {
+        this->bookmark = 0;
+    }
+    ESP_LOGI(TAG, "Opening %s for reading at %ld / %ld.",
+        filename, bookmark, bookmark_max);
 }
 
 void ReaderMode::loop()
@@ -42,7 +56,11 @@ void ReaderMode::loop()
     }
 
     display_clear();
-    pagePrinter.print(pageCurrent);
+    if (bookmark == bookmark_max) {
+        display_alert("THE END");
+    } else {
+        pagePrinter.print(pageCurrent);
+    }
     display_update();
 
     //time_t idleStart = clock();
@@ -57,7 +75,10 @@ void ReaderMode::loop()
             ESP_LOGI(TAG, "Turn page PLUS.");
             if (pageCurrent != NULL) {
                 bookmark = pageCurrent->start + pageCurrent->len;
-                // TODO: limit bookmark to file size
+                if (bookmark > bookmark_max) {
+                    bookmark = bookmark_max;
+                }
+                reader_storage_set_position(bookmark);
                 typesetter.destroyPage(pageLast);
                 pageLast = pageCurrent;
                 pageCurrent = NULL;
@@ -70,6 +91,7 @@ void ReaderMode::loop()
             ESP_LOGI(TAG, "Turn page MINUS.");
             if (pageLast != NULL) {
                 bookmark = pageLast->start;
+                reader_storage_set_position(bookmark);
                 typesetter.destroyPage(pageCurrent);
                 pageCurrent = pageLast;
                 pageLast = NULL;

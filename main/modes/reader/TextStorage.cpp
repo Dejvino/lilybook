@@ -8,7 +8,7 @@ TextStorage::TextStorage()
 
 TextReader* TextStorage::open(char* filename)
 {
-    FILE* f = fopen("/sdcard/book.txt", "r");
+    FILE* f = fopen(filename, "r");
     if (f == NULL) {
         ESP_LOGE(TAG, "File could not be opened");
         return NULL;

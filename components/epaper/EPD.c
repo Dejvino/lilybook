@@ -1749,6 +1749,13 @@ void EPD_clearStringRect(int x, int y, char *str)
 	EPD_fillRect(x+dispWin.x1, y+dispWin.y1, w, h, _bg);
 }
 
+void EPD_frameStringRect(int x, int y, char *str)
+{
+	int w = EPD_getStringWidth(str);
+	int h = EPD_getfontheight();
+	EPD_drawRect(x+dispWin.x1, y+dispWin.y1, w, h, _fg);
+}
+
 //==============================================================================
 /**
  * bit-encoded bar position of all digits' bcd segments

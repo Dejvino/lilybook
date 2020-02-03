@@ -14,6 +14,8 @@ void display_update();
 void display_wake();
 void display_sleep();
 
+void display_alert(char* text);
+
 #ifdef __cplusplus
 }
 #endif

@@ -31,13 +31,6 @@ size_t TextReader::read(long pos, char* text, size_t len)
     } else {
         fseek(this->f, pos, SEEK_SET);
         size_t read = fread(text, 1, len, this->f);
-        if (read > 0) {
-            //ESP_LOGI(TAG, "Read content: %s", text);
-        } else {
-            ESP_LOGI(TAG, "End of file. Closing.");
-            fclose(this->f);
-            this->f = NULL;
-        }
         return read;
     }
 }

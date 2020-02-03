@@ -1,7 +1,9 @@
+#include <string.h>
 #include "core/common.h"
 #include "core/buttons.h"
 #include "core/display.h"
 #include <epaper/EPD.h>
+#include "reader/reader_storage.h"
 #include "InternalMemoryMenuMode.h"
 
 void InternalMemoryMenuMode::start()
@@ -18,14 +20,25 @@ void InternalMemoryMenuMode::loop()
     EPD_print("Internal Memory", CENTER, 00);
 
     EPD_setFont(DEJAVU18_FONT, NULL);
-    EPD_print("Current File:", 5, 30);
-    EPD_print("/spiffs/book.txt", 20, 50);
-    
-    EPD_print("Size:", 5, 80);
-    EPD_print("1234 kB", 100, 80);
+    // TODO: free memory?
 
-    EPD_print("Position:", 5, 100);
-    EPD_print("45%", 100, 100);
+    EPD_print("Size:", 5, 40);
+    long length = reader_storage_get_length();
+    if (length < 0) {
+        strcpy(text, "unknown");
+    } else {
+        sprintf(text, "%ld kB", length / 1024);
+    }
+    EPD_print(text, 100, 40);
+
+    EPD_print("Position:", 5, 70);
+    long position = reader_storage_get_position();
+    if (position < 0) {
+        strcpy(text, "unknown");
+    } else {
+        sprintf(text, "%d%%", (int)(position * 100 / length));
+    }
+    EPD_print(text, 100, 70);
     display_update();
 
     while (1) {

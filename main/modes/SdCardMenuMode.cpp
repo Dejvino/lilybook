@@ -8,10 +8,13 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include "reader/reader_storage.h"
 #include "SdCardMenuMode.h"
 
 #include "esp_log.h"
 static char* TAG = "SdCardMenuMode";
+
+#define SDCARD_BASEDIR "/sdcard/"
 
 // TODO: make use of bytes
 
@@ -104,7 +107,15 @@ void SdCardMenuMode::onOptionSelected(int option)
         this->setFinished();
         return;
     }
-    // TODO files
+
+    // TODO: spawn a copy AppMode
+    display_alert("Copying into internal memory...");
+    char source[64];
+    strcpy(source, SDCARD_BASEDIR);
+    strcat(source, this->options[option]);
+    reader_storage_store_file(source);
+    reader_storage_set_position(0);
+    this->setFinished();
 }
 
 int SdCardMenuMode::getOptionsX()

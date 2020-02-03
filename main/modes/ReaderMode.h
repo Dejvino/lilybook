@@ -12,6 +12,7 @@ public:
 
 private:
     long bookmark = 0;
+    long bookmark_max = 0;
     Typesetter typesetter;
     PagePrinter pagePrinter;
     TextStorage textStorage;

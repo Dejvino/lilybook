@@ -111,3 +111,11 @@ void display_sleep()
 {
     EPD_PowerOff();
 }
+
+void display_alert(char* text)
+{
+    EPD_clearStringRect(CENTER, CENTER, text);
+    EPD_print(text, CENTER, CENTER);
+    EPD_frameStringRect(CENTER, CENTER, text);
+    EPD_UpdateScreen();
+}

@@ -6,8 +6,6 @@
 #include <string.h>
 #include "esp_system.h"
 #include "driver/gpio.h"
-#include "esp_system.h"
-#include "esp_heap_alloc_caps.h"
 
 #include "esp_log.h"
 static const char *TAG = "main";

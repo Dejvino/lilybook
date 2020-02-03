@@ -529,6 +529,10 @@ int EPD_getStringWidth(char* str);
  */
 void EPD_clearStringRect(int x, int y, char *str);
 
+/*
+ * Frames the rectangle occupied by string with current foreground color
+ */
+void EPD_frameStringRect(int x, int y, char *str);
 
 /*
  * Compile font c source file to .fnt file
